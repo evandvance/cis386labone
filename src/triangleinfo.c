@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 
 
 float calc_s(float num1, float num2, float num3) {
@@ -20,7 +21,7 @@ float hurons_formula(float s, float a, float b, float c) {
     return area;
 }
 
-int is_valid_triangle(int side1, int side2, int side3) {
+bool is_valid_triangle(int side1, int side2, int side3) {
     int largest_side = side1;
 
     if(side2 > largest_side){
@@ -34,28 +35,28 @@ int is_valid_triangle(int side1, int side2, int side3) {
     //I dont know which side is the largest before so all the sides without the largest one is the
     //sum of the two smaller sides which needs to be smaller than the largest for the triangle to be valid
     if((side1 + side2 + side3) - largest_side < largest_side) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-int is_scalene(int side1, int side2, int side3){
+bool is_scalene(int side1, int side2, int side3){
     //No sides are equal is scalene
-    if(side1 != side2 && side2 != side3 && side1 != side3) return 1;
-    return 0;
+    if(side1 != side2 && side2 != side3 && side1 != side3) return true;
+    return false;
 }
 
-int is_isosceles(int side1, int side2, int side3){
+bool is_isosceles(int side1, int side2, int side3){
     //Any sides are equal is isosceles
-    if(side1 == side2 || side2 == side3 || side1 == side3) return 1;
-    return 0;
+    if(side1 == side2 || side2 == side3 || side1 == side3) return true;
+    return false;
 }
 
-int is_equilateral(int side1, int side2, int side3){
+bool is_equilateral(int side1, int side2, int side3){
     //All sides are equal is equilateral
-    if(side1 == side2 && side2 == side3 && side1 == side3) return 1;
-    return 0;
+    if(side1 == side2 && side2 == side3 && side1 == side3) return true;
+    return false;
 }
 
 int main(int argc, char *argv[]) {
