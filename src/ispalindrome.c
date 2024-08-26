@@ -42,6 +42,7 @@ bool is_palindrome(char str[]){
     }
 
     destoy_stack(stack);
+    stack = NULL;
 
     if(strcmp(clean_string, reversed_string) == 0) return true;
     return false;

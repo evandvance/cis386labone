@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include "lib/Hashtable.h"
 
 #define MAX_FACTORS 16
 
@@ -29,6 +30,8 @@ void get_prime_factors(int n, int *dst){
     if(n > 2){
         *dst++ = n;
     }
+
+    *dst++ = 0;
 }
 
 bool is_powerful(int num){
@@ -36,8 +39,29 @@ bool is_powerful(int num){
     int factors[MAX_FACTORS];
     get_prime_factors(num, factors);
 
-    //TODO Make a hash map
+    Hashtable *hashtable = create_hashtable(MAX_FACTORS);
 
+    for (int i = 0; factors[i] != 0; i++){
+        printf("%d", factors[i]);
+        //Convert number to a string
+        char key[sizeof(factors[i])];
+        sprintf(key, "%d", factors[i]);
+
+
+        if(contains_key(hashtable, key)){
+            update_val(hashtable, key, lookup(hashtable, key) + 1);
+        } else {
+            add(hashtable, key, 1);
+        }
+    }
+
+    for(int i = 0; i < hashtable->size; i++){
+        if(lookup(hashtable, hashtable->keys[i]) % 2 != 0) return false;
+    }
+
+    destroy_hashtable(hashtable);
+
+    return true;
 }
 
 
@@ -46,9 +70,9 @@ int main(int argc, char *argv[]) {
     int num;
 
     printf("Enter a number: ");
-    scanf("%d", &num);
+    // scanf("%d", &num);
 
-    if(is_powerful(num)){
+    if(is_powerful(36)){
         printf("true");
     } else {
         printf("false");
