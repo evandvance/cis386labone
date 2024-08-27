@@ -1,13 +1,77 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "lib/Hashtable.h"
+#include <stdlib.h>
+// #include "lib/Hashtable.h"
 
-#define MAX_FACTORS 16
+#define MAX_FACTORS 32
+
+
+//I started making a hashtable and the solution wasnt going well
+//And I didnt feel like doing the work to figure it out so i did this
+//instead
+typedef struct {
+    int *keys;
+    int *values;
+    int capacity;
+    int size;
+} Table;
+
+Table *create_table(int capacity){
+    if(capacity <= 0) return NULL;
+
+    Table *table = malloc(sizeof(Table));
+
+    if(table == NULL) return NULL;
+
+    int *keys = malloc(sizeof(int) * capacity);
+
+    if(keys == NULL) return NULL;
+
+    table->keys = keys;
+
+    int *values = malloc(sizeof(int) * capacity);
+
+    if(values == NULL) return NULL;
+
+    for(int i = 0; i < sizeof(int) * capacity; i++){
+        values[i] = 0;
+    }
+
+    table->values = values;
+
+    table->capacity = capacity;
+    table->size = 0;
+
+    return table;
+}
+
+void destroy_table(Table *table){
+    free(table->keys);
+    free(table->values);
+    free(table);
+}
+
+bool is_full(Table *table){
+    return table->size == table->capacity;
+}
+
+void add(Table *table, int key){
+    if(is_full(table)) return;
+
+    if(table->values[key] > 0){
+        table->values[key]++;
+    } else {
+        table->keys[table->size] = key;
+        table->values[key] = 1;
+        table->size++;
+    }
+}
+
 
 void get_prime_factors(int n, int *dst){
     //This is modified code I found on the internet
     //I had no idea how to pragmatically factor a number
-    //I think I can explain it though.S
+    //I think I can explain it though.
 
     //Calculate all 2s in n
     while(n % 2 == 0){
@@ -34,32 +98,40 @@ void get_prime_factors(int n, int *dst){
     *dst++ = 0;
 }
 
+int calc_factor_size(int *factors){
+    int size = 0;
+
+    int i = 0;
+    while(factors[i] != 0) {
+        i++;
+        size++;
+    }
+
+    return size;
+}
+
 bool is_powerful(int num){
 
     int factors[MAX_FACTORS];
     get_prime_factors(num, factors);
+    int factor_size = calc_factor_size(factors);
 
-    Hashtable *hashtable = create_hashtable(MAX_FACTORS);
+    Table *table = create_table(factor_size);
 
-    for (int i = 0; factors[i] != 0; i++){
-        printf("%d", factors[i]);
-        //Convert number to a string
-        char key[sizeof(factors[i])];
-        sprintf(key, "%d", factors[i]);
+    if(table == NULL) return false;
 
-
-        if(contains_key(hashtable, key)){
-            update_val(hashtable, key, lookup(hashtable, key) + 1);
-        } else {
-            add(hashtable, key, 1);
-        }
+    for(int i = 0; factors[i] != 0; i++){
+        add(table, factors[i]);
     }
 
-    for(int i = 0; i < hashtable->size; i++){
-        if(lookup(hashtable, hashtable->keys[i]) % 2 != 0) return false;
+    for(int i = 0; i < table->size ; i++){
+        if(table->values[table->keys[i]] < 2 ) {
+            destroy_table(table);
+            return false;
+            }
     }
 
-    destroy_hashtable(hashtable);
+    destroy_table(table);
 
     return true;
 }
@@ -70,12 +142,12 @@ int main(int argc, char *argv[]) {
     int num;
 
     printf("Enter a number: ");
-    // scanf("%d", &num);
+    scanf("%d", &num);
 
-    if(is_powerful(36)){
-        printf("true");
+    if(is_powerful(num)){
+        printf("true\n");
     } else {
-        printf("false");
+        printf("false\n");
     }
 
     return 0;

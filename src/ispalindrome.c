@@ -66,8 +66,6 @@ int main(int argc, char *argv[]) {
 
 /*
 I am aware that there is a solution using cs string functions. I thought this would be fun to do
-it was not. I spent far too long debugging this program. I would appreciate more disucssion in class
-on pointers, what & does, when to use a pointer. I understand that they are a var that points to an 
-address in memory. I just dont understand how that is usefull unless youre pointing to something on the
-heap.
+it was not. I spent far too long debugging this program. I also think there is a solution that is faster too
+but I thought this was a good exercize. 
 */
