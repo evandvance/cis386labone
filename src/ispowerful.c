@@ -8,7 +8,7 @@
 
 //I started making a hashtable and the solution wasnt going well
 //And I didnt feel like doing the work to figure it out so i did this
-//instead
+//instead its loosely based on a hashtable but it is not as... useful...
 typedef struct {
     int *keys;
     int *values;
@@ -51,6 +51,26 @@ void destroy_table(Table *table){
     free(table);
 }
 
+int indexofkey(Table *table, int item){
+
+    for (int i = 0; i < table->size; i++){
+        int temp = table->keys[i];
+        if(temp == item) {
+            return i;
+        }
+    };
+
+    return -1;
+}
+
+int lookup(Table *table, int key){
+    int index = indexofkey(table, key);
+
+    if(index == -1) return -1;
+
+    return table->values[index];
+}
+
 bool is_full(Table *table){
     return table->size == table->capacity;
 }
@@ -58,15 +78,14 @@ bool is_full(Table *table){
 void add(Table *table, int key){
     if(is_full(table)) return;
 
-    if(table->values[key] > 0){
-        table->values[key]++;
+    if(lookup(table, key) >= 0){
+        table->values[indexofkey(table, key)]++;
     } else {
         table->keys[table->size] = key;
-        table->values[key] = 1;
+        table->values[table->size] = 1;
         table->size++;
     }
 }
-
 
 void get_prime_factors(int n, int *dst){
     //This is modified code I found on the internet
@@ -95,6 +114,7 @@ void get_prime_factors(int n, int *dst){
         *dst++ = n;
     }
 
+    //This is so I can know where the end of the data is
     *dst++ = 0;
 }
 
@@ -125,13 +145,15 @@ bool is_powerful(int num){
     }
 
     for(int i = 0; i < table->size ; i++){
-        if(table->values[table->keys[i]] < 2 ) {
+
+        if(lookup(table, table->keys[i]) < 2 ) {
             destroy_table(table);
             return false;
             }
     }
 
     destroy_table(table);
+    table = NULL;
 
     return true;
 }
