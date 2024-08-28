@@ -122,15 +122,12 @@ void get_prime_factors(int n, int *dst){
 }
 
 int calc_factor_size(int *factors){
-    int size = 0;
-
-    int i = 0;
-    while(factors[i] != 0) {
-        i++;
-        size++;
+    for(int i = 0; i < MAX_FACTORS;i++){
+        //This loop should always break before hitting MAX_FACTORS
+        if(factors[i] == 0) return i;
     }
 
-    return size;
+    return -1;
 }
 
 bool is_powerful(int num){
@@ -138,6 +135,8 @@ bool is_powerful(int num){
     int factors[MAX_FACTORS];
     get_prime_factors(num, factors);
     int factor_size = calc_factor_size(factors);
+
+    if(factor_size == -1) return false;
 
     Table *table = create_table(factor_size);
 
