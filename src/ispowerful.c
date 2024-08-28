@@ -51,6 +51,7 @@ void destroy_table(Table *table){
     free(table);
 }
 
+//Returns -1 if the item is not a key
 int indexofkey(Table *table, int item){
 
     for (int i = 0; i < table->size; i++){
@@ -75,10 +76,12 @@ bool is_full(Table *table){
     return table->size == table->capacity;
 }
 
+//This is largely where I strayed from hashtable concepts to just doing
+//What i needed to happen for this program to do as intended
 void add(Table *table, int key){
     if(is_full(table)) return;
 
-    if(lookup(table, key) >= 0){
+    if(lookup(table, key) > 0){
         table->values[indexofkey(table, key)]++;
     } else {
         table->keys[table->size] = key;
